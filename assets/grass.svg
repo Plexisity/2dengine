@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="192mm"
+   height="71mm"
+   viewBox="0 0 192 71"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (fcd0343856, 2026-01-01)"
-   sodipodi:docname="Grass.svg"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   sodipodi:docname="grass.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,12 +24,12 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      inkscape:zoom="1.7286111"
-     inkscape:cx="396.85039"
-     inkscape:cy="532.21919"
-     inkscape:window-width="1920"
-     inkscape:window-height="1030"
+     inkscape:cx="484.20376"
+     inkscape:cy="341.60373"
+     inkscape:window-width="2560"
+     inkscape:window-height="1382"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer2" />
   <defs
@@ -39,39 +39,39 @@
      id="layer2"
      inkscape:label="Grass">
     <rect
-       style="fill:#27b900;fill-opacity:1;stroke-width:0.289843"
+       style="fill:#27b900;fill-opacity:1;stroke-width:0.290314"
        id="rect1-3-1"
-       width="191.14079"
-       height="69.744911"
-       x="9.5178928"
-       y="-191.14474"
+       width="190.94099"
+       height="70.044998"
+       x="0.33377585"
+       y="-70.519997"
        inkscape:label="grass"
        transform="scale(1,-1)"
-       ry="7.5787606"
-       rx="8.0549936" />
+       ry="7.6113706"
+       rx="8.0465736" />
     <rect
-       style="fill:#209a00;fill-opacity:1;stroke-width:0.262856"
+       style="fill:#209a00;fill-opacity:1;stroke-width:0.263283"
        id="rect1-3"
-       width="182.60887"
-       height="60.041962"
-       x="13.961417"
-       y="-186.2218"
+       width="182.418"
+       height="60.300312"
+       x="4.7726569"
+       y="-65.575874"
        inkscape:label="grass"
        transform="scale(1,-1)"
-       ry="6.5243993"
-       rx="7.6954446" />
+       ry="6.5524735"
+       rx="7.6874003" />
   </g>
   <g
      inkscape:label="Dirt"
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#9a5000;fill-opacity:1;stroke-width:0.242647"
+       style="fill:#9a5000;fill-opacity:1;stroke-width:0.243042"
        id="rect1"
-       width="168.46344"
-       height="44.479954"
-       x="20.663912"
-       y="134.14032"
+       width="168.28735"
+       height="44.671345"
+       x="11.468144"
+       y="13.270309"
        inkscape:label="dirt" />
   </g>
 </svg>
