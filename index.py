@@ -15,7 +15,7 @@ clock = pygame.time.Clock()
 # create game objects
 cube = Cube(SCREEN_WIDTH // 2 - 25, SCREEN_HEIGHT // 2 - 25)
 # level handles loading/drawing the background/ground
-level = Level("assets/grass.svg")
+level = Level("assets/Level1.svg")
 
 # Main game loop
 running = True

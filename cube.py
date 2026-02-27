@@ -11,12 +11,9 @@ class Cube:
         self.velocity_y = 0
         self.speed = 5
         # jump physics
-        # we only need an instantaneous upward impulse and constant gravity
         self.jumping = False
-        # initial jump impulse (negative = upwards)
-        self.jump_speed = -15.0               # much stronger jump
-        # gravity acceleration per frame
-        self.gravity = 0.5                    # pull back down
+        self.jump_speed = -15.0
+        self.gravity = 0.5
 
     def handle_input(self, keys):
         """Handle keyboard input for cube movement"""
@@ -40,10 +37,6 @@ class Cube:
         """Update cube position"""
         # horizontal movement
         self.x += self.velocity_x
-
-        # we don't need a timer – the jump is a single impulse and gravity handles the rest
-
-        # always apply gravity so the cube falls after jumping or walking off an edge
         self.velocity_y += self.gravity
 
         # vertical movement (only once)
