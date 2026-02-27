@@ -4,6 +4,7 @@ import sys
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BLACK, RED
 from cube import Cube
 from level import Level
+from sound import SoundManager
 
 draw_background = True
 
@@ -40,18 +41,15 @@ pygame.display.set_caption("Flip It! 4 - 2D Platformer Demo")
 clock = pygame.time.Clock()
 font = None
 font_is_freetype = False
-
-# (cube implementation now lives in cube.py)
-# create game objects
 cube = Cube(SCREEN_WIDTH // 2 - 25, SCREEN_HEIGHT // 2 - 25)
-# level handles loading/drawing the background/ground
-level = Level("assets/Level1.svg")
-
+level = Level("assets/Levels/Level1.svg")
+sound_manager = SoundManager()
+sound_manager.play_music("assets/Music/music.mp3", loop=True)
 # Main game loop
 running = True
 while running:
-    dt = clock.tick(FPS)
-    
+    dt = clock.tick(FPS) / 1000.0
+    dtfps = dt * 1000.0
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -62,47 +60,19 @@ while running:
     
     # Get pressed keys
     keys = pygame.key.get_pressed()
+    #play music loop for /assets/Music/music.mp3
     
-    # Update (pass level so cube can check wall contact for wall-jump)
+
     cube.handle_input(keys, level)
-    cube.update(level)
-    
-    # Draw
-    screen.fill(BLACK)
+    cube.update(dt, level)
     if draw_background == True:
         level.draw_background(screen)
     level.draw(screen)
     cube.draw(screen)
-    # FPS counter (top-left, red) with background so it draws over the level
-    # Draw a small contrasting background box for readability (always drawn)
-    hud_bg_rect = (6, 6, 45, 30)
-    hud_bg_color = (30, 30, 30)
-    pygame.draw.rect(screen, hud_bg_color, hud_bg_rect)
-    # now render FPS text on top
-    # We only support rendering FPS if pygame.freetype was available at startup.
-    # Avoid calling pygame.font.* at runtime to prevent circular-import warnings.
 
-    fps = int(1000 / max(1, dt))
-    rendered = False
-    if font is not None and font_is_freetype:
-        # Render with explicit background so surface is opaque and visible
-        fps_surf, _ = font.render(f"FPS: {fps}", RED, hud_bg_color)
-        screen.blit(fps_surf, (10, 8))
-        rendered = True
-    else:
-        # Try a safe SysFont fallback (may be unavailable on some installs)
-        try:
-            if hasattr(pygame, 'font'):
-                sf = pygame.font.SysFont(None, 24)
-                fps_surf = sf.render(f"FPS: {fps}", True, RED, hud_bg_color)
-                screen.blit(fps_surf, (10, 8))
-                rendered = True
-        except Exception:
-            rendered = False
-
-    if not rendered:
-        # Ultimate fallback: draw digits manually so user always sees numbers
-        _draw_small_number(screen, str(max(0, int(fps))), (14, 8), scale=4, color=RED)
+    fps = int(1000 / max(1, dtfps))
+    _draw_small_number(screen, str(max(0, int(fps))), (14, 8), scale=4, color=RED)
+        
 
     # Update display
     pygame.display.flip()

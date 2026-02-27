@@ -4,7 +4,7 @@
 # Screen dimensions
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
-FPS = 60
+FPS = 165
 
 # Colors
 BLACK = (0, 0, 0)

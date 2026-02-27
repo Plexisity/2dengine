@@ -20,7 +20,7 @@ class Level:
         self.mask = pygame.mask.from_surface(self.image)
         # Cache a background image (if present) so we don't re-render SVG every frame.
         try:
-            self.bg_image = svg_to_surface("assets/bg.svg", width=SCREEN_WIDTH, height=SCREEN_HEIGHT, scale_mode="fill")
+            self.bg_image = svg_to_surface("assets/Backgrounds/bg.svg", width=SCREEN_WIDTH, height=SCREEN_HEIGHT, scale_mode="fill")
         except Exception:
             self.bg_image = None
 

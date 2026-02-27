@@ -9,10 +9,10 @@ class Cube:
         self.size = size
         self.velocity_x = 0
         self.velocity_y = 0
-        self.speed = 7.5
+        self.speed = 400
         self.jumping = False
-        self.jump_speed = -17.5
-        self.gravity = 0.7
+        self.jump_speed = -900
+        self.gravity = 2500
         self.wall_sliding = False
         self.wall_dir = 0
         self.wall_slide_gravity_scale = 0.22
@@ -20,6 +20,9 @@ class Cube:
         self.wall_jump_h_mult = 1.7
         self.jump_key_held = False
         self.sprite = None
+        self.trail = []
+        self.max_trail_length = 10
+        self.trail_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
         #cache player sprite
         try:
             img = svg_to_surface("assets/player.svg", width=self.size, height=self.size, scale_mode="fit")
@@ -29,7 +32,6 @@ class Cube:
     def handle_input(self, keys, *args):
         """Handle keyboard input for cube movement"""
         self.velocity_x = 0
-        # do not touch self.velocity_y; let physics handle vertical motion
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.velocity_x = -self.speed
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -37,9 +39,7 @@ class Cube:
 
         # jump handling: detect initial press (not held)
         pressed = keys[pygame.K_SPACE] or keys[pygame.K_w]
-        # Note: handle_input may optionally receive a level to allow wall detection
         level = None
-        # Try to get level from extra arg if provided (backwards-compatible)
         try:
             # callers may pass (keys, level)
             level = args[0]
@@ -85,66 +85,55 @@ class Cube:
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self.velocity_y = self.speed
 
-    def update(self, level=None):
-        """Update cube position with collision resolution against the level.
-
-        This resolves horizontal movement first (checking per-pixel steps),
-        then vertical movement similarly. Works when `level` provides
-        pixel-perfect collisions via `get_collisions(rect)`.
-        """
-
-        target_x = self.x + self.velocity_x
-        if level:
-            delta_x = target_x - self.x
-            steps = int(abs(int(round(delta_x))))
-            step_dir = 1 if delta_x > 0 else -1
-            for _ in range(steps):
-                self.x += step_dir
-                if level.get_collisions(self.rect()):
-                    self.x -= step_dir
-                    self.velocity_x = 0
-                    break
-        else:
-            self.x = target_x
-
-        # Keep cube within horizontal bounds
-        if self.x < 0:
-            self.x = 0
-            self.velocity_x = 0
-        if self.x + self.size > SCREEN_WIDTH:
-            self.x = SCREEN_WIDTH - self.size
+    def update(self, dt, level=None):
+        """Update cube position with collisions, frame-rate independent."""
+        
+        # --- Horizontal movement ---
+        self.x += self.velocity_x * dt
+        if level and level.get_collisions(self.rect()):
+            # Move back until not colliding
+            if self.velocity_x > 0:
+                while level.get_collisions(self.rect()):
+                    self.x -= 1
+            elif self.velocity_x < 0:
+                while level.get_collisions(self.rect()):
+                    self.x += 1
             self.velocity_x = 0
 
-        # apply gravity (reduced while sliding on a wall)
+        # Keep cube within screen bounds
+        self.x = max(0, min(self.x, SCREEN_WIDTH - self.size))
+
+        # --- Gravity / Vertical movement ---
         effective_gravity = self.gravity * (self.wall_slide_gravity_scale if self.wall_sliding else 1.0)
-        self.velocity_y += effective_gravity
+        self.velocity_y += effective_gravity * dt
 
-        # while sliding on a wall, cap downward speed to allow climbing timing
+        # Cap vertical speed if sliding
         if self.wall_sliding and self.velocity_y > self.wall_slide_max_fall:
             self.velocity_y = self.wall_slide_max_fall
 
-        # Vertical movement with per-pixel collision resolution
-        target_y = self.y + self.velocity_y
-        if level:
-            delta_y = target_y - self.y
-            steps = int(abs(int(round(delta_y))))
-            step_dir = 1 if delta_y > 0 else -1
-            for _ in range(steps):
-                self.y += step_dir
-                if level.get_collisions(self.rect()):
-                    # step back and stop vertical velocity
-                    self.y -= step_dir
-                    self.velocity_y = 0
-                    self.jumping = False
-                    break
-        else:
-            self.y = target_y
+        # Move vertically
+        self.y += self.velocity_y * dt
+        if level and level.get_collisions(self.rect()):
+            # Move back until not colliding
+            if self.velocity_y > 0:  # falling
+                while level.get_collisions(self.rect()):
+                    self.y -= 1
+                self.jumping = False
+            elif self.velocity_y < 0:  # jumping
+                while level.get_collisions(self.rect()):
+                    self.y += 1
+            self.velocity_y = 0
 
-        # fallback ground collision if no level provided
+        # Ground collision fallback
         if level is None and self.y + self.size >= GROUND_Y:
             self.y = GROUND_Y - self.size
             self.velocity_y = 0
             self.jumping = False
+
+        # Update trail
+        self.trail.append((self.x, self.y))
+        if len(self.trail) > self.max_trail_length:
+            self.trail.pop(0)
 
     def on_ground(self):
         """Return True if cube is standing on the ground"""
@@ -155,7 +144,20 @@ class Cube:
         return pygame.Rect(int(self.x), int(self.y), int(self.size), int(self.size))
 
     def draw(self, surface):
-        """Draw the cube"""
+        # Draw trail
+        for i, (tx, ty) in enumerate(self.trail):
+            alpha = int(255 * ((self.max_trail_length - i) / self.max_trail_length))  # newest = opaque
+
+            if self.sprite:
+                trail_copy = self.sprite.copy()
+                trail_copy.set_alpha(alpha)
+                surface.blit(trail_copy, (int(tx), int(ty)))
+            else:
+                trail_surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+                trail_surf.fill((255, 255, 255, alpha))
+                surface.blit(trail_surf, (int(tx), int(ty)))
+
+        # Draw main cube on top
         if self.sprite:
             surface.blit(self.sprite, (int(self.x), int(self.y)))
         else:
