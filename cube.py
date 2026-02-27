@@ -1,5 +1,5 @@
 import pygame
-from constants import GROUND_Y, SCREEN_WIDTH, SCREEN_HEIGHT
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_Y
 
 
 class Cube:
@@ -33,30 +33,44 @@ class Cube:
             # simple manual down control (could be removed)
             self.velocity_y = self.speed
 
-    def update(self):
-        """Update cube position"""
+    def update(self, level=None):
+        """Update cube position with collision resolution against the level."""
         # horizontal movement
         self.x += self.velocity_x
-        self.velocity_y += self.gravity
-
-        # vertical movement (only once)
-        self.y += self.velocity_y
 
         # Keep cube within horizontal bounds
         if self.x < 0:
             self.x = 0
-        if self.x + self.size > SCREEN_WIDTH:
-            self.x = SCREEN_WIDTH - self.size
+        if self.x + self.size > 1920:  # SCREEN_WIDTH before scaling
+            self.x = 1920 - self.size
 
-        # ground collision
-        if self.y + self.size >= GROUND_Y:
-            self.y = GROUND_Y - self.size
-            self.velocity_y = 0
-            self.jumping = False
+        # apply gravity and vertical movement
+        self.velocity_y += self.gravity
+        self.y += self.velocity_y
+
+        # collision resolution with level
+        if level:
+            # Check for collision and resolve if needed
+            if level.get_collisions(self.rect()):
+                # Resolve by pushing up and stopping vertical velocity
+                _, new_y, _ = level.resolve_collision(self.rect(), self.velocity_y)
+                self.y = new_y
+                self.velocity_y = 0
+                self.jumping = False
+        else:
+            # Fallback: simple ground collision
+            if self.y + self.size >= 1000:  # GROUND_Y
+                self.y = 1000 - self.size
+                self.velocity_y = 0
+                self.jumping = False
 
     def on_ground(self):
         """Return True if cube is standing on the ground"""
         return self.y + self.size >= GROUND_Y
+
+    def rect(self) -> pygame.Rect:
+        """Return bounding rect for collision checks."""
+        return pygame.Rect(int(self.x), int(self.y), int(self.size), int(self.size))
 
     def draw(self, surface):
         """Draw the cube"""

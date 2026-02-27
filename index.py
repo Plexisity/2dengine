@@ -35,7 +35,7 @@ while running:
     
     # Update
     cube.handle_input(keys)
-    cube.update()
+    cube.update(level)
     
     # Draw
     screen.fill(BLACK)
