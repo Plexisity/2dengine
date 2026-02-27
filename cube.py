@@ -1,6 +1,6 @@
 import pygame
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_Y, WHITE
-
+from utils import svg_to_surface
 
 class Cube:
     def __init__(self, x, y, size=50):
@@ -9,14 +9,22 @@ class Cube:
         self.size = size
         self.velocity_x = 0
         self.velocity_y = 0
-        self.speed = 5
-        # jump physics
+        self.speed = 7.5
         self.jumping = False
-        # make jumps slightly smaller
-        self.jump_speed = -12.0
+        self.jump_speed = -17.5
         self.gravity = 0.7
-        # input state to detect single key presses
+        self.wall_sliding = False
+        self.wall_dir = 0
+        self.wall_slide_gravity_scale = 0.22
+        self.wall_slide_max_fall = 4.5
+        self.wall_jump_h_mult = 1.7
         self.jump_key_held = False
+        self.sprite = None
+        #cache player sprite
+        try:
+            img = svg_to_surface("assets/player.svg", width=self.size, height=self.size, scale_mode="fit")
+            self.sprite = img.convert_alpha()
+        except Exception:            self.sprite = None
 
     def handle_input(self, keys, *args):
         """Handle keyboard input for cube movement"""
@@ -45,23 +53,36 @@ class Cube:
             touching_left = level.get_collisions(rect.move(-1, 0))
             touching_right = level.get_collisions(rect.move(1, 0))
 
-        can_jump = self.on_ground() or touching_left or touching_right
+        # Determine if we are sliding on a wall: in-air, touching a wall and falling
+        self.wall_sliding = (not self.on_ground()) and (touching_left or touching_right) and self.velocity_y > 0
+        if touching_left:
+            self.wall_dir = -1
+        elif touching_right:
+            self.wall_dir = 1
+        else:
+            self.wall_dir = 0
+
+
+        if level:
+            rect = self.rect()
+            touching_ground = level.get_collisions(rect.move(0, 1))
+            touching_wall = touching_left or touching_right
+            can_jump = touching_ground or (touching_wall and not touching_ground)
+        else:
+            can_jump = self.on_ground()
 
         if pressed and not self.jump_key_held and can_jump:
-            # Initiate jump (from ground or wall)
             self.jumping = True
             self.velocity_y = self.jump_speed
-            # wall-jump horizontal impulse
             if not self.on_ground():
                 if touching_left:
-                    self.velocity_x = self.speed * 1.6
+                    self.velocity_x = self.speed * self.wall_jump_h_mult
                 elif touching_right:
-                    self.velocity_x = -self.speed * 1.6
-        # update held state
+                    self.velocity_x = -self.speed * self.wall_jump_h_mult
+
         self.jump_key_held = pressed
 
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            # simple manual down control (could be removed)
             self.velocity_y = self.speed
 
     def update(self, level=None):
@@ -71,7 +92,7 @@ class Cube:
         then vertical movement similarly. Works when `level` provides
         pixel-perfect collisions via `get_collisions(rect)`.
         """
-        # Horizontal movement with per-pixel collision resolution
+
         target_x = self.x + self.velocity_x
         if level:
             delta_x = target_x - self.x
@@ -80,7 +101,6 @@ class Cube:
             for _ in range(steps):
                 self.x += step_dir
                 if level.get_collisions(self.rect()):
-                    # step back and stop horizontal velocity
                     self.x -= step_dir
                     self.velocity_x = 0
                     break
@@ -95,8 +115,13 @@ class Cube:
             self.x = SCREEN_WIDTH - self.size
             self.velocity_x = 0
 
-        # apply gravity
-        self.velocity_y += self.gravity
+        # apply gravity (reduced while sliding on a wall)
+        effective_gravity = self.gravity * (self.wall_slide_gravity_scale if self.wall_sliding else 1.0)
+        self.velocity_y += effective_gravity
+
+        # while sliding on a wall, cap downward speed to allow climbing timing
+        if self.wall_sliding and self.velocity_y > self.wall_slide_max_fall:
+            self.velocity_y = self.wall_slide_max_fall
 
         # Vertical movement with per-pixel collision resolution
         target_y = self.y + self.velocity_y
@@ -131,4 +156,7 @@ class Cube:
 
     def draw(self, surface):
         """Draw the cube"""
-        pygame.draw.rect(surface, WHITE, (self.x, self.y, self.size, self.size))
+        if self.sprite:
+            surface.blit(self.sprite, (int(self.x), int(self.y)))
+        else:
+            pygame.draw.rect(surface, WHITE, self.rect())

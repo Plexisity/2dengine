@@ -18,6 +18,11 @@ class Level:
         # Create a mask for collision detection from the SVG surface.
         # Non-transparent pixels (alpha > 0) are considered solid.
         self.mask = pygame.mask.from_surface(self.image)
+        # Cache a background image (if present) so we don't re-render SVG every frame.
+        try:
+            self.bg_image = svg_to_surface("assets/bg.svg", width=SCREEN_WIDTH, height=SCREEN_HEIGHT, scale_mode="fill")
+        except Exception:
+            self.bg_image = None
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.image, (0, 0))
@@ -66,3 +71,8 @@ class Level:
                 return x, y - i, 0
         
         return x, y, velocity
+    
+    def draw_background(self, surface: pygame.Surface):
+        """Draw just the background layer of the level /assets/bg.svg"""
+        if self.bg_image:
+            surface.blit(self.bg_image, (0, 0))
