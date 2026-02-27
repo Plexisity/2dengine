@@ -33,8 +33,8 @@ while running:
     # Get pressed keys
     keys = pygame.key.get_pressed()
     
-    # Update
-    cube.handle_input(keys)
+    # Update (pass level so cube can check wall contact for wall-jump)
+    cube.handle_input(keys, level)
     cube.update(level)
     
     # Draw
