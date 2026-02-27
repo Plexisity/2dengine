@@ -21,7 +21,7 @@ class Cube:
         self.jump_key_held = False
         self.sprite = None
         self.trail = []
-        self.max_trail_length = 10
+        self.max_trail_length = 20
         self.trail_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
         #cache player sprite
         try:
@@ -145,13 +145,19 @@ class Cube:
 
     def draw(self, surface):
         # Draw trail
+        trail_length = len(self.trail)
         for i, (tx, ty) in enumerate(self.trail):
-            alpha = int(255 * ((self.max_trail_length - i) / self.max_trail_length))  # newest = opaque
+            # newest = more opaque, oldest = transparent
+            base_alpha = 0      # fully transparent at the tail
+            max_alpha = 200     # most visible near the player
+            # fade from tail -> head
+            alpha = int(base_alpha + (max_alpha - base_alpha) * ((i + 1) / trail_length))
 
             if self.sprite:
-                trail_copy = self.sprite.copy()
-                trail_copy.set_alpha(alpha)
-                surface.blit(trail_copy, (int(tx), int(ty)))
+                temp = pygame.Surface(self.sprite.get_size(), pygame.SRCALPHA)
+                temp.blit(self.sprite, (0, 0))
+                temp.fill((255, 255, 255, alpha), special_flags=pygame.BLEND_RGBA_MULT)
+                surface.blit(temp, (int(tx), int(ty)))
             else:
                 trail_surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
                 trail_surf.fill((255, 255, 255, alpha))
