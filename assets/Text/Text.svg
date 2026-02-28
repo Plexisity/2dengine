@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1920"
+   height="1080"
+   viewBox="0 0 1920 1080"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="Text.svg"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="0.76799653"
+     inkscape:cx="794.92546"
+     inkscape:cy="383.46527"
+     inkscape:window-width="2560"
+     inkscape:window-height="1382"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="830.73292"
+       y="604.16939"
+       width="121.0943"
+       height="272.13665"
+       id="rect3" />
+    <linearGradient
+       id="linearGradient1"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#ff4a24;stop-opacity:1;"
+         offset="0"
+         id="stop1" />
+      <stop
+         style="stop-color:#22e233;stop-opacity:1;"
+         offset="0.50455356"
+         id="stop3" />
+      <stop
+         style="stop-color:#249aff;stop-opacity:1;"
+         offset="1"
+         id="stop2" />
+    </linearGradient>
+    <rect
+       x="235.67815"
+       y="108.0734"
+       width="649.74248"
+       height="242.1886"
+       id="rect1" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="linearGradient2"
+       x1="259.10263"
+       y1="172.6174"
+       x2="853.03412"
+       y2="277.34354"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(457.19732,-5.2083572)" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="font-size:192px;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;fill:url(#linearGradient2)"
+       d="m 711.7188,132.77211 h 80.4375 v 15.9375 h -61.5 v 41.25 h 55.5 v 15.9375 h -55.5 v 66.84375 h -18.9375 z m 109.6875,-5.90625 h 17.25 v 145.875 h -17.25 z m 53.34375,40.875 h 17.25 v 105 h -17.25 z m 0,-40.875 h 17.25 v 21.84375 h -17.25 z m 70.03125,130.125 v 55.6875 h -17.34375 v -144.9375 h 17.34375 v 15.9375 q 5.4375,-9.375 13.6875,-13.875 8.34375,-4.59375 19.875,-4.59375 19.125,0 31.0313,15.1875 12,15.1875 12,39.9375 0,24.75 -12,39.9375 -11.9063,15.1875 -31.0313,15.1875 -11.53125,0 -19.875,-4.5 -8.25,-4.59375 -13.6875,-13.96875 z m 58.6875,-36.65625 q 0,-19.03125 -7.875,-29.8125 -7.78125,-10.875 -21.46875,-10.875 -13.6875,0 -21.5625,10.875 -7.78125,10.78125 -7.78125,29.8125 0,19.03125 7.78125,29.90625 7.875,10.78125 21.5625,10.78125 13.6875,0 21.46875,-10.78125 7.875,-10.875 7.875,-29.90625 z m 108.2813,-87.5625 h 18.9375 v 139.96875 h -18.9375 z m 72.9375,5.15625 v 29.8125 h 35.5312 v 13.40625 h -35.5312 v 57 q 0,12.84375 3.4687,16.5 3.5625,3.65625 14.3438,3.65625 h 17.7187 v 14.4375 h -17.7187 q -19.9688,0 -27.5625,-7.40625 -7.5938,-7.5 -7.5938,-27.1875 v -57 h -12.6562 v -13.40625 h 12.6562 v -29.8125 z m 69.0937,111 h 19.0313 v 23.8125 h -19.0313 z m 0,-116.15625 h 19.0313 v 61.40625 l -1.875,33.46875 h -15.1875 l -1.9688,-33.46875 z"
+       id="text1"
+       aria-label="Flip It!" />
+    <path
+       d="m 900.19997,764.56136 h -63.51926 v -19.75682 l 68.40536,-94.7478 h 13.80853 v 97.72194 h 22.3061 v 16.78268 h -22.3061 v 36.11463 h -18.69463 z m 0,-16.78268 v -65.85609 l -47.16145,65.85609 z"
+       id="text3"
+       style="font-size:212.439px;font-family:FreeSans;-inkscape-font-specification:'FreeSans, Normal';white-space:pre;fill:#ffffff;stroke-width:1.106"
+       transform="translate(109.37549,-66.40655)"
+       aria-label="4" />
+  </g>
+</svg>

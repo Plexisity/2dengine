@@ -16,3 +16,8 @@ BLUE = (0, 0, 255)
 # Ground level
 GROUND_Y = 500
 GROUND_HEIGHT = 100
+
+#game states
+MENU = 0
+PLAYING = 1
+game_state = MENU

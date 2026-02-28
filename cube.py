@@ -12,7 +12,7 @@ class Cube:
         self.speed = 400
         self.jumping = False
         self.jump_speed = -900
-        self.gravity = 2500
+        self.gravity = 3000
         self.wall_sliding = False
         self.wall_dir = 0
         self.wall_slide_gravity_scale = 0.22
