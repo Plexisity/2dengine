@@ -117,21 +117,76 @@ class Cube:
 
     def update(self, dt, level=None):
         """Update cube position with collisions, frame-rate independent."""
-        
+
+        def _resolve_axis(delta, axis):
+            if delta == 0:
+                return False
+
+            blocked = False
+            start = self.x if axis == "x" else self.y
+            direction = 1 if delta > 0 else -1
+            steps = abs(int(delta))
+
+            # Move in bounded whole-pixel steps and stop at first contact.
+            for _ in range(steps):
+                candidate = start + direction
+                if axis == "x":
+                    self.x = candidate
+                else:
+                    self.y = candidate
+
+                if level and level.get_collisions(self.rect()):
+                    if axis == "x":
+                        self.x = start
+                    else:
+                        self.y = start
+                    blocked = True
+                    break
+
+                start = candidate
+
+            if blocked:
+                return True
+
+            # Resolve the remaining fractional movement with a bounded binary search.
+            end = (self.x if axis == "x" else self.y) + (delta - (direction * steps))
+            low = self.x if axis == "x" else self.y
+            high = end
+
+            for _ in range(12):
+                if abs(high - low) <= 0.001:
+                    break
+                mid = (low + high) * 0.5
+                if axis == "x":
+                    self.x = mid
+                else:
+                    self.y = mid
+
+                if level and level.get_collisions(self.rect()):
+                    high = mid
+                    blocked = True
+                else:
+                    low = mid
+
+            if axis == "x":
+                self.x = low
+            else:
+                self.y = low
+
+            return blocked
+
         # --- Horizontal movement ---
-        self.x += self.velocity_x * dt
-        if level and level.get_collisions(self.rect()):
-            # Move back until not colliding
-            if self.velocity_x > 0:
-                while level.get_collisions(self.rect()):
-                    self.x -= 1
-            elif self.velocity_x < 0:
-                while level.get_collisions(self.rect()):
-                    self.x += 1
-            self.velocity_x = 0
+        dx = self.velocity_x * dt
+        x_blocked = _resolve_axis(dx, "x")
 
         # Keep cube within screen bounds
-        self.x = max(0, min(self.x, SCREEN_WIDTH - self.size))
+        clamped_x = max(0, min(self.x, SCREEN_WIDTH - self.size))
+        if clamped_x != self.x:
+            x_blocked = True
+            self.x = clamped_x
+
+        if x_blocked:
+            self.velocity_x = 0
 
         # --- Gravity / Vertical movement ---
         effective_gravity = self.gravity * (self.wall_slide_gravity_scale if self.wall_sliding else 1.0)
@@ -142,16 +197,12 @@ class Cube:
             self.velocity_y = self.wall_slide_max_fall
 
         # Move vertically
-        self.y += self.velocity_y * dt
-        if level and level.get_collisions(self.rect()):
-            # Move back until not colliding
-            if self.velocity_y > 0:  # falling
-                while level.get_collisions(self.rect()):
-                    self.y -= 1
+        dy = self.velocity_y * dt
+        was_falling = self.velocity_y > 0
+        y_blocked = _resolve_axis(dy, "y")
+        if y_blocked:
+            if was_falling:
                 self.jumping = False
-            elif self.velocity_y < 0:  # jumping
-                while level.get_collisions(self.rect()):
-                    self.y += 1
             self.velocity_y = 0
 
         # Ground collision fallback
