@@ -71,8 +71,6 @@ while running:
         if selected_level is not None:
             current_level = selected_level
             level = Level(f"assets/Levels/Level{current_level}.svg")
-
-        menu.handle_event(event)
     # Get pressed keys
     keys = pygame.key.get_pressed()
     #play music loop for /assets/Music/music.mp3
