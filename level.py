@@ -18,6 +18,7 @@ class Level:
         # Create a mask for collision detection from the SVG surface.
         # Non-transparent pixels (alpha > 0) are considered solid.
         self.mask = pygame.mask.from_surface(self.image)
+        self._rect_mask_cache = {}
         # Cache a background image (if present) so we don't re-render SVG every frame.
         try:
             self.bg_image = svg_to_surface("assets/Backgrounds/bg.svg", width=SCREEN_WIDTH, height=SCREEN_HEIGHT, scale_mode="fill")
@@ -38,18 +39,17 @@ class Level:
         
         if intersection.width <= 0 or intersection.height <= 0:
             return False
-        
+
+        size_key = (rect.width, rect.height)
+        rect_mask = self._rect_mask_cache.get(size_key)
+        if rect_mask is None:
+            rect_mask = pygame.mask.Mask(size_key, fill=True)
+            self._rect_mask_cache[size_key] = rect_mask
+
         try:
-            # Check if any pixel in the intersection is solid (non-transparent)
-            for x in range(intersection.left, intersection.right):
-                for y in range(intersection.top, intersection.bottom):
-                    if 0 <= x < level_rect.width and 0 <= y < level_rect.height:
-                        if self.mask.get_at((x, y)):
-                            return True
+            return self.mask.overlap(rect_mask, (rect.x, rect.y)) is not None
         except (IndexError, ValueError):
-            pass
-        
-        return False
+            return False
 
     def resolve_collision(self, rect: pygame.Rect, velocity) -> tuple:
         """Resolve collision and return adjusted position and velocity.
