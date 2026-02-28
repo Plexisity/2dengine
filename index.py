@@ -36,6 +36,16 @@ def _draw_small_number(surface, text, pos, scale=4, color=(255, 0, 0)):
                     rect = (x0 + x_offset + rx * scale, y0 + ry * scale, scale, scale)
                     pygame.draw.rect(surface, color, rect)
 
+def load_level(level_number):
+    global level, current_level
+
+    current_level = level_number
+    level = Level(f"assets/Levels/Level{level_number}.svg")
+
+    cube.teleport(100, 0)
+    cube.velocity_x = 0
+    cube.velocity_y = 0
+
 
 # initialize pygame
 pygame.init()
@@ -45,51 +55,64 @@ clock = pygame.time.Clock()
 font = None
 font_is_freetype = False
 cube = Cube(SCREEN_WIDTH // 2 - 25, SCREEN_HEIGHT // 2 - 25)
-current_level = 1
-level = Level(f"assets/Levels/Level{current_level}.svg")
+current_level = None
 sound_manager = SoundManager()
 sound_manager.play_music("assets/Music/music.mp3", loop=True)
+sound_manager.set_music_volume(0.1)
+# wait until level is set by menu before loading
+
 intro = IntroText("assets/Text/Text.svg")
 menu = LevelMenu()
-
+cube.teleport(100, 0)
 
 # Main game loop
 running = True
 while running:
     dt = clock.tick(FPS) / 1000.0
     dtfps = dt * 1000.0
-    # Handle events
+
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT:
             running = False
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-        
+
         selected_level = menu.handle_event(event)
 
         if selected_level is not None:
             current_level = selected_level
             level = Level(f"assets/Levels/Level{current_level}.svg")
-    # Get pressed keys
-    keys = pygame.key.get_pressed()
-    #play music loop for /assets/Music/music.mp3
-    
+            menu.visible = False
+            cube.teleport(100, 0)
 
-    cube.handle_input(keys, level)
-    cube.update(dt, level)
-    if draw_background == True:
-        level.draw_background(screen)
-    level.draw(screen)
-    cube.draw(screen)
+    keys = pygame.key.get_pressed()
+
+
+    if current_level is not None:
+        cube.handle_input(keys, level)
+        result = cube.update(dt, level)
+
+        if result:
+            load_level(current_level + 1)
+
+        if draw_background:
+            level.draw_background(screen)
+
+        level.draw(screen)
+        cube.draw(screen)
+        intro.update(dt)
+        intro.draw(screen)
+
     menu.draw(screen)
+
     fps = int(1000 / max(1, dtfps))
     _draw_small_number(screen, str(max(0, int(fps))), (14, 8), scale=4, color=RED)
-    intro.update(dt)
-    intro.draw(screen)
-        
 
-    # Update display
+
+
     pygame.display.flip()
 
 pygame.quit()

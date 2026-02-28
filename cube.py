@@ -1,7 +1,9 @@
 import pygame
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_Y, WHITE
+import sound
 from utils import svg_to_surface
-
+from sound import SoundManager
+soundmgr = SoundManager()
 class Cube:
     def __init__(self, x, y, size=50):
         self.x = x
@@ -15,8 +17,8 @@ class Cube:
         self.gravity = 3000
         self.wall_sliding = False
         self.wall_dir = 0
-        self.wall_slide_gravity_scale = 0.22
-        self.wall_slide_max_fall = 4.5
+        self.wall_slide_gravity_scale = 0.5
+        self.wall_slide_max_fall = 40.5
         self.wall_jump_h_mult = 1.7
         self.jump_key_held = False
         self.sprite = None
@@ -26,12 +28,18 @@ class Cube:
         self._trail_sprite_cache = []
         self._trail_rect_cache = []
         self._trail_cache_key = None
+
         #cache player sprite
         try:
             img = svg_to_surface("assets/player.svg", width=self.size, height=self.size, scale_mode="fit")
             self.sprite = img.convert_alpha()
         except Exception:            self.sprite = None
         self._rebuild_trail_cache()
+    
+    def teleport(self, new_x, new_y):
+        """Instantly move player to a specific position"""
+        self.x = new_x
+        self.y = new_y
 
     def _rebuild_trail_cache(self):
         """Rebuild cached alpha variants used by the trail renderer."""
@@ -215,6 +223,15 @@ class Cube:
         self.trail.append((self.x, self.y))
         if len(self.trail) > self.max_trail_length:
             self.trail.pop(0)
+
+        # Kill player if they fall below the screen
+        if self.y > SCREEN_HEIGHT:
+            soundmgr.death_sound()
+            self.teleport(0, 500)
+        
+        #signal next level if player reaches right edge of screen
+        if self.x + self.size >= SCREEN_WIDTH:
+            return True
 
     def on_ground(self):
         """Return True if cube is standing on the ground"""

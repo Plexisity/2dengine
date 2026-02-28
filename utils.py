@@ -88,20 +88,9 @@ def svg_to_surface(svg_path, width=None, height=None, scale_mode='contain'):
                                 output_width=out_w,
                                 output_height=out_h)
 
-    # Write a debug PNG to disk so we can inspect the rasterisation result
-    #try:
-    #    with open('assets/grass_debug.png', 'wb') as f:
-    #        f.write(png_bytes)
-    #except Exception:
-    #    pass
-
-    # Load PNG bytes with Pillow and convert to a pygame Surface.
     buf = io.BytesIO(png_bytes)
     buf.seek(0)
     img = Image.open(buf).convert("RGBA")
-    # If we rasterised larger than the requested box and scale_mode requests
-    # covering, crop the image to the requested size. For ground we prefer
-    # bottom alignment so the crop keeps the lower portion of the image.
     if width and height and scale_mode == 'cover':
         iw, ih = img.size
         crop_left = 0

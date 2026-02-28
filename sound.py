@@ -9,6 +9,7 @@ class SoundManager:
         self.sounds = {}
         self.music_volume = 0.5
         self.effects_volume = 0.5
+        self.load_sound("death", "assets/Music/death.wav")
 
     def load_sound(self, name: str, path: str):
         """Load a sound effect from the given file path."""
@@ -49,3 +50,6 @@ class SoundManager:
         self.effects_volume = max(0.0, min(1.0, volume))
         for sound in self.sounds.values():
             sound.set_volume(self.effects_volume)
+
+    def death_sound(self):
+        self.play_sound("death")
