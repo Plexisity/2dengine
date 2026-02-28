@@ -101,6 +101,7 @@ while running:
         if draw_background:
             level.draw_background(screen)
 
+        level.draw_spikes(screen, current_level)      
         level.draw(screen)
         cube.draw(screen)
         intro.update(dt)

@@ -126,6 +126,13 @@ class Cube:
     def update(self, dt, level=None):
         """Update cube position with collisions, frame-rate independent."""
 
+        # Spike collision
+        if level and level.touching_spikes(self.rect()):
+            soundmgr.death_sound()
+            self.teleport(0, 500)
+            self.velocity_x = 0
+            self.velocity_y = 0
+
         def _resolve_axis(delta, axis):
             if delta == 0:
                 return False

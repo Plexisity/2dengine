@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1920"
+   height="1080"
+   viewBox="0 0 507.99999 285.75"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   sodipodi:docname="Spikes2.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.955623"
+     inkscape:cx="330.3872"
+     inkscape:cy="918.08055"
+     inkscape:window-width="2560"
+     inkscape:window-height="1382"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect16"
+       style="fill:#4d4d4d;stroke-width:0;paint-order:fill markers stroke"
+       d="m 67.354135,248.48564 v -20.78091 l 8.684945,20.78091 z"
+       sodipodi:nodetypes="cccc" />
+    <path
+       id="rect16-1"
+       style="fill:#666666;stroke-width:0;paint-order:fill markers stroke"
+       d="M 67.395248,248.43351 V 227.6526 l -8.684945,20.78091 z"
+       sodipodi:nodetypes="cccc" />
+    <path
+       id="rect16-4"
+       style="fill:#4d4d4d;stroke-width:0;paint-order:fill markers stroke"
+       d="m 193.52872,192.43319 h 45.06905 l -45.06905,17.34399 z"
+       sodipodi:nodetypes="cccc" />
+    <path
+       id="rect16-1-4"
+       style="fill:#666666;stroke-width:0;paint-order:fill markers stroke"
+       d="m 193.64178,192.51529 h 45.06906 L 193.64178,175.1713 Z"
+       sodipodi:nodetypes="cccc" />
+    <path
+       id="rect16-17"
+       style="fill:#4d4d4d;stroke-width:0;paint-order:fill markers stroke"
+       d="m 397.05961,70.649067 h -45.06905 l 45.06905,-17.34399 z"
+       sodipodi:nodetypes="cccc" />
+    <path
+       id="rect16-1-5"
+       style="fill:#666666;stroke-width:0;paint-order:fill markers stroke"
+       d="M 396.94655,70.566967 H 351.8775 l 45.06905,17.34398 z"
+       sodipodi:nodetypes="cccc" />
+    <path
+       id="rect16-7"
+       style="fill:#4d4d4d;stroke-width:0;paint-order:fill markers stroke"
+       d="m 475.48886,259.42935 v -18.81643 l 7.92223,18.81643 z"
+       sodipodi:nodetypes="cccc" />
+    <path
+       id="rect16-1-8"
+       style="fill:#666666;stroke-width:0;paint-order:fill markers stroke"
+       d="m 475.52636,259.38215 v -18.81643 l -7.92223,18.81643 z"
+       sodipodi:nodetypes="cccc" />
+  </g>
+</svg>

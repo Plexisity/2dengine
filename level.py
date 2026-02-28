@@ -14,6 +14,9 @@ class Level:
             height=SCREEN_HEIGHT,
             scale_mode="fill"
         )
+        self.spikes_image = None
+        self.spikes_level_number = None
+        self.spikes_mask = None
         
         # Create a mask for collision detection from the SVG surface.
         # Non-transparent pixels (alpha > 0) are considered solid.
@@ -76,3 +79,33 @@ class Level:
         """Draw just the background layer of the level /assets/bg.svg"""
         if self.bg_image:
             surface.blit(self.bg_image, (0, 0))
+
+    def draw_spikes(self, surface: pygame.Surface, level_number: int):
+        if self.spikes_image is None or self.spikes_level_number != level_number:
+            try:
+                self.spikes_image = svg_to_surface(
+                    f"assets/Obstacles/Spikes{level_number}.svg",
+                    width=SCREEN_WIDTH,
+                    height=SCREEN_HEIGHT,
+                    scale_mode="fill"
+                ).convert_alpha()
+
+                # 🔥 Create mask once
+                self.spikes_mask = pygame.mask.from_surface(self.spikes_image)
+
+                self.spikes_level_number = level_number
+            except Exception:
+                self.spikes_image = None
+                self.spikes_mask = None
+
+        if self.spikes_image:
+            surface.blit(self.spikes_image, (0, 0))
+
+    def touching_spikes(self, rect: pygame.Rect) -> bool:
+        if not self.spikes_mask:
+            return False
+
+        return self.spikes_mask.overlap(
+            pygame.mask.Mask((rect.width, rect.height), fill=True),
+            (rect.x, rect.y)
+        ) is not None
