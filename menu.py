@@ -6,9 +6,20 @@ class LevelMenu:
     def __init__(self):
         self.visible = True
         self.font = pygame.font.SysFont("Arial", 40)
+        self.overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.overlay.fill((0, 0, 0))
+        self.overlay.set_alpha(255)
 
         self.buttons = []
         self._create_buttons()
+
+    def _ensure_overlay_size(self, size):
+        if self.overlay.get_size() == size:
+            return
+
+        self.overlay = pygame.Surface(size)
+        self.overlay.fill((0, 0, 0))
+        self.overlay.set_alpha(255)
 
     def _create_buttons(self):
         cols = 3
@@ -48,11 +59,8 @@ class LevelMenu:
         if not self.visible:
             return
 
-        # dark overlay
-        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        overlay.set_alpha(255)
-        overlay.fill((0, 0, 0))
-        screen.blit(overlay, (0, 0))
+        self._ensure_overlay_size(screen.get_size())
+        screen.blit(self.overlay, (0, 0))
 
         # draw buttons
         for rect, level_num in self.buttons:
