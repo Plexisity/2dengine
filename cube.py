@@ -23,11 +23,41 @@ class Cube:
         self.trail = []
         self.max_trail_length = 20
         self.trail_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        self._trail_sprite_cache = []
+        self._trail_rect_cache = []
+        self._trail_cache_key = None
         #cache player sprite
         try:
             img = svg_to_surface("assets/player.svg", width=self.size, height=self.size, scale_mode="fit")
             self.sprite = img.convert_alpha()
         except Exception:            self.sprite = None
+        self._rebuild_trail_cache()
+
+    def _rebuild_trail_cache(self):
+        """Rebuild cached alpha variants used by the trail renderer."""
+        cache_key = (self.max_trail_length, self.size, self.sprite is not None)
+        if cache_key == self._trail_cache_key:
+            return
+
+        self._trail_cache_key = cache_key
+        self._trail_sprite_cache = []
+        self._trail_rect_cache = []
+
+        max_alpha = 200
+        if self.max_trail_length <= 0:
+            return
+
+        for i in range(self.max_trail_length):
+            alpha = int(max_alpha * ((i + 1) / self.max_trail_length))
+            if self.sprite:
+                temp = self.sprite.copy()
+                temp.fill((255, 255, 255, alpha), special_flags=pygame.BLEND_RGBA_MULT)
+                self._trail_sprite_cache.append(temp)
+            else:
+                temp = self.trail_surface.copy()
+                temp.fill((255, 255, 255))
+                temp.set_alpha(alpha)
+                self._trail_rect_cache.append(temp)
 
     def handle_input(self, keys, *args):
         """Handle keyboard input for cube movement"""
@@ -144,24 +174,22 @@ class Cube:
         return pygame.Rect(int(self.x), int(self.y), int(self.size), int(self.size))
 
     def draw(self, surface):
+        self._rebuild_trail_cache()
+
         # Draw trail
         trail_length = len(self.trail)
+        if trail_length == 0:
+            trail_length = 1
+
         for i, (tx, ty) in enumerate(self.trail):
             # newest = more opaque, oldest = transparent
-            base_alpha = 0      # fully transparent at the tail
-            max_alpha = 200     # most visible near the player
-            # fade from tail -> head
-            alpha = int(base_alpha + (max_alpha - base_alpha) * ((i + 1) / trail_length))
+            cache_index = int((i + 1) * self.max_trail_length / trail_length) - 1
+            cache_index = max(0, min(cache_index, self.max_trail_length - 1))
 
             if self.sprite:
-                temp = pygame.Surface(self.sprite.get_size(), pygame.SRCALPHA)
-                temp.blit(self.sprite, (0, 0))
-                temp.fill((255, 255, 255, alpha), special_flags=pygame.BLEND_RGBA_MULT)
-                surface.blit(temp, (int(tx), int(ty)))
+                surface.blit(self._trail_sprite_cache[cache_index], (int(tx), int(ty)))
             else:
-                trail_surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-                trail_surf.fill((255, 255, 255, alpha))
-                surface.blit(trail_surf, (int(tx), int(ty)))
+                surface.blit(self._trail_rect_cache[cache_index], (int(tx), int(ty)))
 
         # Draw main cube on top
         if self.sprite:
